@@ -134,7 +134,14 @@ Pendientes conocidos para una versión de producción:
 - Restringir el acceso de red solo a IPs autorizadas.
 - Evaluar un servidor con GPU si el tiempo de respuesta de `llama3` se vuelve una limitante.
 
-### 6. 📸 Evidencia
+### 6. Evidencia de funcionamiento
 
+**Bot respondiendo en Telegram:**
+![Bot en Telegram](docs/evidence/bot_telegram_respondiendo.png)
 
+**Workflow completo en n8n:**
+![Workflow n8n](docs/evidencia/workflow_n8n.png)
+
+**Tabla knowledge_base en PostgreSQL:**
+![Tabla en PostgreSQL](docs/evidencia/postgres_tabla_knowledge_base.png)
 
