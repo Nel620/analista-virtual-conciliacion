@@ -121,7 +121,7 @@ Ver [`n8n/README.md`](n8n/README.md) para las instrucciones de cómo reconstruir
 ## Seguridad
 
 - Ningún dato transaccional real se usa en este proyecto — solo conocimiento conceptual.
-- Las credenciales viven en un archivo `.env` local, nunca en el código ni en este repositorio (ver `.gitignore`).
+- Las credenciales viven en un archivo `.env` local, nunca en el código ni en este repositorio.
 - **Recomendación pendiente para producción**: restringir el acceso a los puertos de Ollama (`11434`) y PostgreSQL (`5432`) solo a las IPs que realmente los necesitan, en vez de dejarlos abiertos a cualquier IP.
 
 ## Estado del proyecto
@@ -133,3 +133,8 @@ Pendientes conocidos para una versión de producción:
 - Memoria de conversación (que el bot recuerde preguntas anteriores del mismo chat).
 - Restringir el acceso de red solo a IPs autorizadas.
 - Evaluar un servidor con GPU si el tiempo de respuesta de `llama3` se vuelve una limitante.
+
+### 6. 📸 Evidencia
+
+
+
