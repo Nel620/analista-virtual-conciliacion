@@ -1,0 +1,29 @@
+"categoria","pregunta","respuesta"
+"python","¿Cómo cargo mi archivo de conciliación en Python para empezar a analizarlo?","Usa la librería pandas para leer tu Excel:
+
+import pandas as pd
+df = pd.read_excel('mi_archivo.xlsx', sheet_name='Transacciones')
+df.head()   # muestra las primeras filas para confirmar que cargó bien"
+"python","¿Cómo veo cuántas transacciones tengo en total y qué columnas tiene mi archivo?","df.shape           # (filas, columnas)
+df.columns.tolist()  # lista con el nombre de cada columna"
+"python","¿Cómo filtro solo las transacciones que están pendientes?","pendientes = df[df['estado_conciliacion'] == 'Pendiente']
+pendientes"
+"python","¿Cómo veo las transacciones de riesgo alto que aún requieren revisión?","riesgo_alto = df[(df['nivel_riesgo'] == 'Alto') & (df['requiere_revision'] == 'Si')]
+riesgo_alto"
+"python","¿Cómo cuento cuántas transacciones hay por cada estado de conciliación?","df['estado_conciliacion'].value_counts()"
+"python","¿Cómo calculo el valor neto total por empresa?","df.groupby('empresa')['valor_neto'].sum()"
+"python","¿Cómo encuentro transacciones con un transaccion_id duplicado?","duplicados = df[df.duplicated(subset='transaccion_id', keep=False)]
+duplicados.sort_values('transaccion_id')"
+"python","¿Cómo filtro las transacciones que tienen un motivo de revisión específico, por ejemplo 'Documento faltante'?","documento_faltante = df[df['motivo_revision'].str.contains('Documento faltante', na=False)]
+documento_faltante"
+"python","¿Cómo ordeno las transacciones por días de mora, de mayor a menor?","df.sort_values('dias_mora', ascending=False)"
+"python","¿Cómo encuentro transacciones con campos obligatorios vacíos (documento_ref, centro_costo o responsable)?","incompletas = df[df['documento_ref'].isna() | df['centro_costo'].isna() | df['responsable'].isna()]
+incompletas"
+"python","¿Cómo encuentro transacciones con monto alto (mayor a 7.500.000 en valor absoluto)?","monto_alto = df[df['valor_neto'].abs() > 7500000]
+monto_alto"
+"python","¿Cómo calculo el promedio de días de mora por responsable?","df.groupby('responsable')['dias_mora'].mean().sort_values(ascending=False)"
+"python","¿Cómo exporto el resultado de un filtro a un nuevo archivo Excel?","pendientes = df[df['estado_conciliacion'] == 'Pendiente']
+pendientes.to_excel('transacciones_pendientes.xlsx', index=False)"
+"python","¿Cómo veo un resumen rápido de las columnas numéricas (montos, días de mora)?","df[['valor_bruto', 'impuesto_iva', 'valor_neto', 'dias_mora']].describe()"
+"python","¿Cómo combino dos filtros, por ejemplo transacciones pendientes Y de riesgo alto?","pendientes_riesgo_alto = df[(df['estado_conciliacion'] == 'Pendiente') & (df['nivel_riesgo'] == 'Alto')]
+pendientes_riesgo_alto"
