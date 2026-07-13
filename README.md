@@ -140,8 +140,8 @@ Pendientes conocidos para una versión de producción:
 ![Bot en Telegram](docs/evidence/bot_telegram_respondiendo.png)
 
 **Workflow completo en n8n:**
-![Workflow n8n](docs/evidencia/workflow_n8n.png)
+![Workflow n8n](docs/evidence/workflow_n8n.png)
 
 **Tabla knowledge_base en PostgreSQL:**
-![Tabla en PostgreSQL](docs/evidencia/postgres_tabla_knowledge_base.png)
+![Tabla en PostgreSQL](docs/evidence/postgres_tabla_knowledge_base.png)
 
