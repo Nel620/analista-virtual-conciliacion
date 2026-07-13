@@ -55,6 +55,7 @@ La base de conocimiento se carga una sola vez (o cada vez que se agrega contenid
 ├── .env.example                  # plantilla de configuración (sin claves reales)
 ├── docs/
 │   └── images/                   # diagramas de arquitectura
+│   └── evidence/  
 ├── knowledge_base/
 │   ├── knowledge_qa.csv          # conceptos, roles, procedimientos, políticas, glosario, casos
 │   └── knowledge_qa_python.csv   # comandos de pandas para que el analista explore su propio archivo
