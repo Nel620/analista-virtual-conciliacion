@@ -1,0 +1,198 @@
+{
+  "name": "Asistente Conciliación Bancaria",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -144,
+        -256
+      ],
+      "id": "0e1682f6-b9d7-4775-a010-bd7bd2c6377f",
+      "name": "Recibir mensaje",
+      "webhookId": "REEMPLAZA_CON_TU_WEBHOOK_ID",
+      "credentials": {
+        "telegramApi": {
+          "id": "REEMPLAZA_CON_TU_CREDENTIAL_ID",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $node[\"Construir Contexto RAG\"].json.chat_id }}",
+        "text": "={{ $json.message.content }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        976,
+        -256
+      ],
+      "id": "683f0fd7-fde8-4dee-8048-a15797511a66",
+      "name": "Enviar Respuesta",
+      "webhookId": "REEMPLAZA_CON_TU_WEBHOOK_ID",
+      "credentials": {
+        "telegramApi": {
+          "id": "REEMPLAZA_CON_TU_CREDENTIAL_ID",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://TU_SERVIDOR_OLLAMA:11434/api/chat",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\n  model: \"llama3\",\n  messages: [\n    {\n      role: \"system\",\n      content: \"Eres un Analista Virtual experto en conciliación bancaria. Responde en español, de forma clara y profesional. Usa el CONTEXTO como base, redactado de forma fluida y natural.\"\n    },\n    {\n      role: \"user\",\n      content: \"CONTEXTO:\\n\" + $json.contexto + \"\\n\\nPREGUNTA:\\n\" + $json.pregunta\n    }\n  ],\n  stream: false\n}) }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 300000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        752,
+        -256
+      ],
+      "id": "4c8691f8-3f49-4657-93b8-3630efedd264",
+      "name": "Generar Respuesta con LLM"
+    },
+    {
+      "parameters": {
+        "jsCode": "const contexto = items.map(item => item.json.texto).join(\"\\n\\n\");\n\nreturn [{\n  json: {\n    contexto: contexto,\n    pregunta: $node[\"Recibir mensaje\"].json.message.text,\n    chat_id: $node[\"Recibir mensaje\"].json.message.chat.id\n  },\n  pairedItem: 0\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        528,
+        -256
+      ],
+      "id": "effe9729-b1f8-4af3-89ef-b8596eb4f905",
+      "name": "Construir Contexto RAG"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT doc_id, texto,\n       1 - (embedding <=> '{{ JSON.stringify($json.embeddings[0]) }}'::vector) AS similitud\nFROM knowledge_base\nORDER BY embedding <=> '{{ JSON.stringify($json.embeddings[0]) }}'::vector\nLIMIT 3;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        304,
+        -256
+      ],
+      "id": "015c215a-e666-495b-aefe-6d8901bf0f30",
+      "name": "Buscar Documentos Similares",
+      "credentials": {
+        "postgres": {
+          "id": "REEMPLAZA_CON_TU_CREDENTIAL_ID",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://TU_SERVIDOR_OLLAMA:11434/api/embed",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\n  model: \"nomic-embed-text\",\n  input: [$json.message.text]\n}) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        80,
+        -256
+      ],
+      "id": "a3326247-2117-49b2-9e33-c46f77d9269b",
+      "name": "Generar Embedding Pregunta"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Recibir mensaje": {
+      "main": [
+        [
+          {
+            "node": "Generar Embedding Pregunta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generar Respuesta con LLM": {
+      "main": [
+        [
+          {
+            "node": "Enviar Respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Construir Contexto RAG": {
+      "main": [
+        [
+          {
+            "node": "Generar Respuesta con LLM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar Documentos Similares": {
+      "main": [
+        [
+          {
+            "node": "Construir Contexto RAG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generar Embedding Pregunta": {
+      "main": [
+        [
+          {
+            "node": "Buscar Documentos Similares",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "ab8902b9-fc77-4d9a-8896-871a19037980",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "REEMPLAZA_CON_TU_INSTANCE_ID"
+  },
+  "id": "BpyozaHORElkSz9Y",
+  "tags": []
+}
