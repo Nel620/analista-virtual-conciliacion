@@ -93,6 +93,6 @@ Recibir mensaje  →  Generar Embedding Pregunta  →  Buscar Documentos Similar
 
 ## Notas importantes
 
-- **Escapar el JSON con `JSON.stringify(...)`**: los dos nodos `HTTP Request` arman el body a partir de texto escrito por el usuario (la pregunta de Telegram). Si se escribe el JSON literal con la variable pegada directamente, un acento, comilla o salto de línea en la pregunta rompe el formato. `JSON.stringify` lo evita siempre.
+- **Formatear de forma segura el contenido JSON con `JSON.stringify(...)`:**: los dos nodos `HTTP Request` arman el body a partir de texto escrito por el usuario (la pregunta de Telegram). Si se escribe el JSON literal con la variable pegada directamente, un acento, comilla o salto de línea en la pregunta rompe el formato. `JSON.stringify` lo evita siempre.
 - **Tiempo de espera**: si tu servidor de Ollama no tiene GPU, las respuestas de `llama3` pueden tardar bastante (se observaron hasta ~5 minutos con contexto largo). El timeout de 300000 ms ya lo contempla.
 - **Mensajes duplicados**: si notas que el bot responde dos veces al mismo mensaje, generalmente se debe a que Telegram reintenta la entrega del webhook cuando la respuesta tarda mucho. Una forma de blindarse contra esto es agregar un control de deduplicación por `update_id` antes del primer nodo de procesamiento (no incluido en esta versión del workflow).
